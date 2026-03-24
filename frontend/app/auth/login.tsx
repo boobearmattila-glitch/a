@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Colors } from '../utils/colors';
-import { Button } from '../components/Button';
-import { Input } from '../components/Input';
-import { useAuthStore } from '../store/authStore';
+import { Colors } from '@/utils/colors';
+import { Button } from '@/components/Button';
+import { Input } from '@/components/Input';
+import { useAuthStore } from '@/store/authStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginScreen() {

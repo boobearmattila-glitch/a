@@ -568,6 +568,52 @@ async def create_challenge(challenge: ChallengeCreate, user_id: str = Depends(ge
     await db.challenges.insert_one(challenge_dict)
     return Challenge(**challenge_dict)
 
+@api_router.post("/challenges/generate")
+async def generate_challenge_idea(user_id: str = Depends(get_current_user)):
+    """Generate an AI-powered challenge suggestion for the couple"""
+    user = await db.users.find_one({"id": user_id})
+    partner = None
+    if user.get("partner_id"):
+        partner = await db.users.find_one({"id": user["partner_id"]})
+    
+    context_info = f"Couple: {user['name']} ({user['zodiac_sign']})"
+    if partner:
+        context_info += f" and {partner['name']} ({partner['zodiac_sign']})"
+    
+    system_message = """You are a relationship coach helping couples grow together. 
+    Generate a meaningful relationship challenge that will help them deepen their connection, 
+    improve communication, or overcome obstacles. The challenge should be:
+    - Specific and actionable
+    - Achievable within 1-4 weeks
+    - Focused on growth and understanding
+    - Positive and constructive
+    
+    Format your response as:
+    TITLE: [Short challenge title]
+    DESCRIPTION: [2-3 sentences describing the challenge and why it matters]"""
+    
+    user_message = f"{context_info}\n\nGenerate a personalized relationship challenge for this couple."
+    
+    response = await get_ai_response(system_message, user_message)
+    
+    # Parse the response
+    lines = response.split('\n')
+    title = "Relationship Growth Challenge"
+    description = response
+    
+    for i, line in enumerate(lines):
+        if line.startswith("TITLE:"):
+            title = line.replace("TITLE:", "").strip()
+            # Get description from remaining lines
+            description = '\n'.join(lines[i+1:]).replace("DESCRIPTION:", "").strip()
+            break
+    
+    return {
+        "title": title,
+        "description": description,
+        "suggested": True
+    }
+
 @api_router.get("/challenges")
 async def get_challenges(user_id: str = Depends(get_current_user)):
     user = await db.users.find_one({"id": user_id})

@@ -1,0 +1,156 @@
+[
+  {
+    "test": "Health Check",
+    "success": true,
+    "details": "Status: running",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:27.413691"
+  },
+  {
+    "test": "User 1 Signup",
+    "success": true,
+    "details": "User ID: 2c4e4882-2cf5-4407-b5f5-c2b1fae49f81",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:27.821106"
+  },
+  {
+    "test": "User 2 Signup",
+    "success": true,
+    "details": "User ID: 466aa71b-6fe8-459f-9920-06895e37e515",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:28.188433"
+  },
+  {
+    "test": "User Login",
+    "success": true,
+    "details": "Token received, User: Alice Johnson",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:28.508063"
+  },
+  {
+    "test": "Get Profile",
+    "success": true,
+    "details": "Profile: Alice Johnson (Pisces)",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:28.644918"
+  },
+  {
+    "test": "Link Partner",
+    "success": true,
+    "details": "Linked to: Bob Smith",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:28.748062"
+  },
+  {
+    "test": "Create Journal Entry",
+    "success": true,
+    "details": "Entry ID: cfb9f501-b0a3-4a68-a658-2986eefec191",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:28.891331"
+  },
+  {
+    "test": "Get Journal Entries",
+    "success": true,
+    "details": "Found 1 entries",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:28.987163"
+  },
+  {
+    "test": "Delete Journal Entry",
+    "success": true,
+    "details": "Entry deleted successfully",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:29.082782"
+  },
+  {
+    "test": "AI Meditation",
+    "success": true,
+    "details": "Guidance received (1349 chars)",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:39.519435"
+  },
+  {
+    "test": "AI Relationship Advice",
+    "success": true,
+    "details": "Advice received (1439 chars)",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:49.230481"
+  },
+  {
+    "test": "Daily Horoscope",
+    "success": true,
+    "details": "Horoscope for Pisces (92 chars)",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:49.670496"
+  },
+  {
+    "test": "Compatibility Analysis",
+    "success": true,
+    "details": "Pisces + Cancer = 75/100",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:50.182031"
+  },
+  {
+    "test": "Create Challenge",
+    "success": true,
+    "details": "Challenge ID: 618e9cca-f7c5-4dce-91b4-5b519f142d1b",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:50.294518"
+  },
+  {
+    "test": "Get Challenges",
+    "success": true,
+    "details": "Found 1 challenges",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:50.395609"
+  },
+  {
+    "test": "Update Challenge",
+    "success": true,
+    "details": "Status updated to in_progress",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:50.493375"
+  },
+  {
+    "test": "Create Exercise",
+    "success": true,
+    "details": "Exercise ID: d55a4296-e615-4506-8475-cf7a29b23fd8, Question: What's one thing you wish I understood better abou...",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:50.601308"
+  },
+  {
+    "test": "Get Exercises",
+    "success": true,
+    "details": "Found 1 exercises",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:50.700306"
+  },
+  {
+    "test": "User 1 Exercise Response",
+    "success": true,
+    "details": "Response saved",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:50.792945"
+  },
+  {
+    "test": "User 2 Exercise Response",
+    "success": true,
+    "details": "Response saved",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:50.890878"
+  },
+  {
+    "test": "Unauthorized Access Test",
+    "success": true,
+    "details": "Properly rejected unauthorized request",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:50.982737"
+  },
+  {
+    "test": "Invalid Login Test",
+    "success": true,
+    "details": "Properly rejected invalid credentials",
+    "error": "",
+    "timestamp": "2026-03-24T08:00:51.084213"
+  }
+]

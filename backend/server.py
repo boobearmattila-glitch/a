@@ -124,6 +124,50 @@ class CompatibilityResponse(BaseModel):
     compatibility_score: int
     analysis: str
 
+class MoodEntry(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    mood_type: str  # happy, sad, anxious, peaceful, stressed, excited, angry, content, etc.
+    intensity: int  # 1-5 scale
+    note: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class MoodEntryCreate(BaseModel):
+    mood_type: str
+    intensity: int
+    note: Optional[str] = None
+
+class Task(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    couple_id: str
+    title: str
+    description: Optional[str] = None
+    status: str = "todo"  # todo, in_progress, completed
+    category: Optional[str] = "personal"  # work, personal, home, relationship
+    due_date: Optional[str] = None
+    created_by: str
+    assigned_to: Optional[str] = None  # can be assigned to partner
+    is_shared: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    completed_at: Optional[datetime] = None
+
+class TaskCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    status: str = "todo"
+    category: Optional[str] = "personal"
+    due_date: Optional[str] = None
+    assigned_to: Optional[str] = None
+    is_shared: bool = True
+
+class TaskUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[str] = None
+    category: Optional[str] = None
+    due_date: Optional[str] = None
+    assigned_to: Optional[str] = None
+
 # ============= Utility Functions =============
 
 def hash_password(password: str) -> str:
@@ -649,6 +693,124 @@ async def respond_to_exercise(response: ExerciseResponse, user_id: str = Depends
     )
     
     return {"message": "Response saved"}
+
+# ============= Mood Tracking Routes =============
+
+@api_router.post("/moods")
+async def log_mood(mood: MoodEntryCreate, user_id: str = Depends(get_current_user)):
+    mood_dict = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "mood_type": mood.mood_type,
+        "intensity": mood.intensity,
+        "note": mood.note,
+        "created_at": datetime.utcnow()
+    }
+    
+    await db.moods.insert_one(mood_dict)
+    return MoodEntry(**mood_dict)
+
+@api_router.get("/moods")
+async def get_moods(user_id: str = Depends(get_current_user), days: int = 30):
+    # Get user's mood entries from last X days
+    cutoff_date = datetime.utcnow() - timedelta(days=days)
+    moods = await db.moods.find({
+        "user_id": user_id,
+        "created_at": {"$gte": cutoff_date}
+    }).sort("created_at", -1).to_list(1000)
+    
+    return [MoodEntry(**mood) for mood in moods]
+
+@api_router.get("/moods/partner")
+async def get_partner_moods(user_id: str = Depends(get_current_user), days: int = 30):
+    user = await db.users.find_one({"id": user_id})
+    
+    if not user.get("partner_id"):
+        return []
+    
+    cutoff_date = datetime.utcnow() - timedelta(days=days)
+    moods = await db.moods.find({
+        "user_id": user["partner_id"],
+        "created_at": {"$gte": cutoff_date}
+    }).sort("created_at", -1).to_list(1000)
+    
+    return [MoodEntry(**mood) for mood in moods]
+
+# ============= Task Management Routes =============
+
+@api_router.post("/tasks")
+async def create_task(task: TaskCreate, user_id: str = Depends(get_current_user)):
+    user = await db.users.find_one({"id": user_id})
+    
+    if not user.get("partner_id"):
+        raise HTTPException(status_code=400, detail="No partner linked")
+    
+    couple_id = "_".join(sorted([user_id, user["partner_id"]]))
+    
+    task_dict = {
+        "id": str(uuid.uuid4()),
+        "couple_id": couple_id,
+        "title": task.title,
+        "description": task.description,
+        "status": task.status,
+        "category": task.category,
+        "due_date": task.due_date,
+        "created_by": user_id,
+        "assigned_to": task.assigned_to,
+        "is_shared": task.is_shared,
+        "created_at": datetime.utcnow(),
+        "completed_at": None
+    }
+    
+    await db.tasks.insert_one(task_dict)
+    return Task(**task_dict)
+
+@api_router.get("/tasks")
+async def get_tasks(user_id: str = Depends(get_current_user)):
+    user = await db.users.find_one({"id": user_id})
+    
+    if not user.get("partner_id"):
+        return []
+    
+    couple_id = "_".join(sorted([user_id, user["partner_id"]]))
+    
+    # Get shared tasks and user's personal tasks
+    tasks = await db.tasks.find({
+        "couple_id": couple_id,
+        "$or": [
+            {"is_shared": True},
+            {"created_by": user_id, "is_shared": False}
+        ]
+    }).sort("created_at", -1).to_list(1000)
+    
+    return [Task(**task) for task in tasks]
+
+@api_router.put("/tasks/{task_id}")
+async def update_task(task_id: str, task_update: TaskUpdate, user_id: str = Depends(get_current_user)):
+    update_dict = {k: v for k, v in task_update.dict().items() if v is not None}
+    
+    # If marking as completed, add timestamp
+    if update_dict.get("status") == "completed":
+        update_dict["completed_at"] = datetime.utcnow()
+    
+    result = await db.tasks.update_one(
+        {"id": task_id},
+        {"$set": update_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    return {"message": "Task updated"}
+
+@api_router.delete("/tasks/{task_id}")
+async def delete_task(task_id: str, user_id: str = Depends(get_current_user)):
+    result = await db.tasks.delete_one({"id": task_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Task not found")
+    
+    return {"message": "Task deleted"}
 
 # ============= Health Check =============
 

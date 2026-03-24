@@ -50,7 +50,11 @@ export default function ExercisesScreen() {
         api.get('/exercises'),
         api.get('/challenges'),
       ]);
-      setExercises(exercisesRes.data);
+      // Sort exercises by date (most recent first) and limit to last 10
+      const sortedExercises = exercisesRes.data
+        .sort((a: Exercise, b: Exercise) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 10);
+      setExercises(sortedExercises);
       setChallenges(challengesRes.data);
     } catch (error) {
       console.error('Error loading data:', error);

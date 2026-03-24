@@ -564,17 +564,44 @@ async def create_exercise(exercise: ExerciseCreate, user_id: str = Depends(get_c
         "communication": [
             "What's one thing you wish I understood better about you?",
             "When do you feel most heard and valued in our relationship?",
-            "What's a conversation we've been avoiding that we should have?"
+            "What's a conversation we've been avoiding that we should have?",
+            "How do you prefer to be comforted when you're upset?",
+            "What's something you need more of from me?",
+            "When do you feel most connected to me?",
+            "What's one way I could show my love that would mean the most to you?",
+            "How can I better support you when you're stressed?",
+            "What's something you've wanted to tell me but haven't found the right moment?",
+            "How do you like to resolve conflicts - do you need space or immediate discussion?",
+            "What makes you feel truly seen and understood by me?",
+            "What's a dream or goal you have that you'd like my support with?"
         ],
         "boundary": [
             "What's one boundary that's important for you in our relationship?",
             "When do you need alone time, and how can I support that?",
-            "What makes you feel safe and respected in our relationship?"
+            "What makes you feel safe and respected in our relationship?",
+            "What are your boundaries around phone/social media use when we're together?",
+            "How do you feel about sharing passwords or access to devices?",
+            "What topics or jokes make you uncomfortable that I should avoid?",
+            "What's your ideal balance between couple time and friend time?",
+            "How much physical affection do you need, and when is it too much?",
+            "What are your boundaries around discussing our relationship with others?",
+            "What's something that crosses a line for you that I might not realize?",
+            "How do you feel about surprise visits or unplanned changes to plans?",
+            "What personal space or items are especially important to you?"
         ],
         "gratitude": [
             "What's something I did this week that made you feel loved?",
             "What quality do you most appreciate about our relationship?",
-            "What's a small gesture that means a lot to you?"
+            "What's a small gesture that means a lot to you?",
+            "What's one thing I do that always makes you smile?",
+            "What's a moment we shared recently that you're grateful for?",
+            "What's something about my personality that you find endearing?",
+            "What's a way I've grown or changed that you appreciate?",
+            "What's something I do that makes your life easier?",
+            "What's a memory with me that you cherish?",
+            "What's something you've learned from being in this relationship?",
+            "What's a strength I have that complements you well?",
+            "What's something I said or did that made you feel special lately?"
         ]
     }
     
